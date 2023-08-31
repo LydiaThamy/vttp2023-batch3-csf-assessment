@@ -18,7 +18,11 @@ export class NewsService {
     form.append('photo', post.image)
     form.append('tags', post.tags.toString())
 
-    return this.http.post<any>("/api/news/post", form)
+    const header: HttpHeaders = new HttpHeaders()
+      .set('Content-Type', 'multipart/form-data; boundary=----0YsU72sGdwPe5B')
+
+    console.log(form)
+    return this.http.post<any>("/api/news/post", form, {headers: header})
   }
 
 }
