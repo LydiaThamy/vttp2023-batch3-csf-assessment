@@ -22,21 +22,17 @@ public class NewsService {
 	// Do not change the method name and the return type
 	// You may add any number of parameters
 	// Returns the news id
-	public String postNews(News news, MultipartFile photo) {
+	public String postNews(News news, MultipartFile photo) throws IOException {
 
 		news.setPostDate(System.currentTimeMillis());
 
-		// save image in s3 bucket
-		try {
-			String imageUrl = imageRepo.postImage(photo);
-		} catch (IOException e) {
-			return e.getMessage();
-		}
-
+		String imageUrl = imageRepo.postImage(photo);
 		news.setImage(imageUrl);
-		// save post in redis
 
-		return "";
+		// save post in redis
+		String id="";
+
+		return id;
 	}
 	 
 	// TODO: Task 2
