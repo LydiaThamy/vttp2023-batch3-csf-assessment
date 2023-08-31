@@ -97,9 +97,10 @@ public class NewsController {
 
 	// TODO: Task 3
 	@GetMapping("/{tag}")
-	public ResponseEntity<String> getNewsByTag(@PathVariable("tag") String tag) {
+	public ResponseEntity<String> getNewsByTag(@PathVariable("tag") String tag, @RequestParam("time") Integer time) {
 
-		List<News> newsList = service.getNewsByTag(tag);
+		System.out.println("getting news in controller...");
+		List<News> newsList = service.getNewsByTag(tag, time);
 
 		JsonArrayBuilder jb = Json.createArrayBuilder();
 		for (News n : newsList) {
@@ -111,9 +112,12 @@ public class NewsController {
 					.add("tags", n.getTags().toString())
 					.build();
 
+			System.out.println(json.toString());
+
 			jb.add(json.toString());
 		}
 
+		System.out.println(jb.build().toString());
 		return ResponseEntity.ok(jb.build().toString());
 	}
 }

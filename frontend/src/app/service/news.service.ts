@@ -32,8 +32,11 @@ export class NewsService {
     return this.http.get<any>("/api/news/tags", {params: params})
   }
 
-  getNews(tag: string) {
-    return this.http.get<any>("/api/news/" + tag)
+  getNews(tag: string, time: number) {
+    console.log("getting news in service...")
+    const params = new HttpParams()
+      .set("time", time)
+    return this.http.get<any>("/api/news/" + tag, {params: params})
   }
 
 }

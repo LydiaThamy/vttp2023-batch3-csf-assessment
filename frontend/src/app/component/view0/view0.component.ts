@@ -2,6 +2,7 @@ import { NewsService } from 'src/app/service/news.service';
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { TagCount } from 'src/app/model/TagCount';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-view0',
@@ -13,6 +14,7 @@ export class View0Component {
   timeForm!: FormGroup
   time!: number
   tagCountList: TagCount[] = []
+  sub$!: Subscription
   constructor(private fb: FormBuilder, private service: NewsService) {}
 
   ngOnInit(): void {
@@ -45,7 +47,7 @@ export class View0Component {
   }
 
   getTags(time: number) {
-    this.service.getTags(time).subscribe(data =>
+    this.sub$ = this.service.getTags(time).subscribe(data =>
       {
         data.forEach((e: any) => {
           const tc: TagCount = {
@@ -56,6 +58,10 @@ export class View0Component {
         });
       }
     )
+  }
+  
+  ngOnDestroy() {
+    this.sub$.unsubscribe()
   }
   
 }

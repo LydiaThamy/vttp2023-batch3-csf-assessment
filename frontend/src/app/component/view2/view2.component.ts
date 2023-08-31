@@ -2,6 +2,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { Post } from 'src/app/model/Post';
 import { NewsService } from 'src/app/service/news.service';
 
@@ -16,6 +17,7 @@ export class View2Component implements OnInit {
   @ViewChild('image') image!: ElementRef
   tagArr: string[] = []
   disableForm = false
+  sub$!: Subscription
 
   constructor(private fb: FormBuilder, private router: Router, private service: NewsService) { }
 
@@ -71,7 +73,7 @@ export class View2Component implements OnInit {
     }
 
     // post to api
-    this.service.postNews(post)
+    this.sub$ = this.service.postNews(post)
       .subscribe({
         next: data => {
           alert("News ID " + data['newsId'] + " has been created!")
@@ -85,8 +87,9 @@ export class View2Component implements OnInit {
         },
         complete: () => {this.disableForm = false}
       })
-
-
   }
-
+  
+  ngOnDestroy() {
+    this.sub$.unsubscribe()
+  }
 }

@@ -99,5 +99,28 @@ public class NewsRepository {
 
 	// TODO: Task 3
 	// Write the native Mongo query in the comment above the method
+	/*db.news.aggregate([
+    { "$unwind": "$tags" },
+    { $match: {
+       "tags": "greetings", 
+        "postDate": { "$gte": 000}
+        }},
+        { "$sort": {"postDate": -1}},
+]) */
+		public List<Document> getNewsById(String tag, Integer time) {
+		System.out.println("getting news in repo...");
 
+			long requestedTime = System.currentTimeMillis() - (time * 60000);
+
+			AggregationOperation unwind = Aggregation.unwind("tags");
+			MatchOperation match = Aggregation.match(
+				Criteria.where("tags").is(tag)
+				.and("postDate").gte(requestedTime)
+			);
+			SortOperation sort = Aggregation.sort(
+				Sort.by(Direction.DESC, "postDate")
+			);
+			Aggregation pipeline = Aggregation.newAggregation(unwind, match, sort);
+			return template.aggregate(pipeline, "news", Document.class).getMappedResults();
+		}
 }
