@@ -1,1 +1,18 @@
-<p>view1 works!</p>
+<h1>List of News with #{{tag}}</h1>
+<table>
+    <tr>
+        <td><button type="button" routerLink="/">Back</button></td>
+        <td style="text-align: end;"><button type="button" routerLink="/post">Post News</button></td>
+    </tr>
+</table>
+<div *ngIf="newsList.length > 0">
+    <div *ngFor="let news of newsList">
+        <h3>{{news.title | titlecase}}</h3>
+        <p>Publish date: {{news.postDate | date:'short'}}</p>
+        <img src="{{news.image}}" width="300px">
+        <p>{{news.description}}</p>
+        <p *ngIf="news['tags'].length > 0">
+            <a *ngFor="let tag of news['tags']" routerLink="/news/{{tag}}">{{tag}}</a>
+        </p>
+    </div>
+</div>

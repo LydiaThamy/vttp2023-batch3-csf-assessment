@@ -1,7 +1,8 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from "rxjs";
 import { Post } from '../model/Post';
+import { TagCount } from '../model/TagCount';
 
 @Injectable({
   providedIn: 'root'
@@ -13,16 +14,26 @@ export class NewsService {
   postNews(post: Post): Observable<any> {
 
     let form: FormData = new FormData()
-    form.append('title', post.title)
-    form.append('description', post.description)
-    form.append('photo', post.image)
-    form.append('tags', post.tags.toString())
+    form.set('title', post.title)
+    form.set('description', post.description)
+    form.set('image', post.image)
 
-    const header: HttpHeaders = new HttpHeaders()
-      .set('Content-Type', 'multipart/form-data; boundary=----0YsU72sGdwPe5B')
+    if (post.tags.length > 0)
+      form.set('tags', post.tags.toString())
 
-    console.log(form)
-    return this.http.post<any>("/api/news/post", form, {headers: header})
+    console.log(JSON.stringify(form))
+
+    return this.http.post<any>("/api/news/post", form)
+  }
+
+  getTags(time: number) {
+    const params = new HttpParams()
+      .set("time", time)
+    return this.http.get<any>("/api/news/tags", {params: params})
+  }
+
+  getNews(tag: string) {
+    return this.http.get<any>("/api/news/" + tag)
   }
 
 }

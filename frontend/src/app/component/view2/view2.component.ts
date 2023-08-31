@@ -13,8 +13,9 @@ import { NewsService } from 'src/app/service/news.service';
 export class View2Component implements OnInit {
 
   newsForm!: FormGroup
-  @ViewChild('photo') photo!: ElementRef
+  @ViewChild('image') image!: ElementRef
   tagArr: string[] = []
+  disableForm = false
 
   constructor(private fb: FormBuilder, private router: Router, private service: NewsService) { }
 
@@ -42,8 +43,8 @@ export class View2Component implements OnInit {
     const tags: string = this.newsForm.value['tags'].trim()
 
     for (let s of tags.split(" ")) {
-      if (this.tagArr.includes(s) == false) {
-        this.tagArr.push(s)
+      if (this.tagArr.includes(s.toLowerCase()) == false && s.trim().length > 0) {
+        this.tagArr.push(s.toLowerCase())
       }
     }
   }
@@ -55,6 +56,8 @@ export class View2Component implements OnInit {
   }
 
   postNews(): void {
+    this.disableForm = true
+
     // push remaining tags to array
     this.addTagsToArr()
 
@@ -63,17 +66,15 @@ export class View2Component implements OnInit {
       postDate: 0,
       title: this.newsForm.value['title'],
       description: this.newsForm.value['description'],
-      image: this.photo.nativeElement.files[0],
+      image: this.image.nativeElement.files[0],
       tags: this.tagArr
     }
-
-    console.log(JSON.stringify(post))
 
     // post to api
     this.service.postNews(post)
       .subscribe({
         next: data => {
-          alert("News ID " + data + " has been created!")
+          alert("News ID " + data['newsId'] + " has been created!")
 
           // navigate to view0 in subscription
           this.router.navigate(['/'])
@@ -81,9 +82,9 @@ export class View2Component implements OnInit {
         
         error: (error: HttpErrorResponse) => {
           alert(error['error']['message'])
-        }
+        },
+        complete: () => {this.disableForm = false}
       })
-
 
 
   }

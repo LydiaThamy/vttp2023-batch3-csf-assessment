@@ -1,5 +1,5 @@
 <h1>Share A News</h1>
-<form [formGroup]="newsForm" (ngSubmit)="postNews()">
+<form [formGroup]="newsForm" (ngSubmit)="postNews()" enctype="multipart/form-data">
     <table>
         <tr>
             <td><label for="title">Title:</label></td>
@@ -7,7 +7,7 @@
         </tr>
         <tr>
             <td><label for="photo">Photo:</label></td>
-            <td><input type="file" name="photo" id="photo" accept="image/*" #photo></td>
+            <td><input type="file" name="photo" id="photo" accept="image/*" #image></td>
         </tr>
         <tr>
             <td><label for="description">Description:</label></td>
@@ -28,7 +28,7 @@
         </tr>
         <tr>
             <td><button type="button" routerLink="'/'">Back</button></td>
-            <td style="text-align: end;" ><button type="submit" [disabled]="newsForm.invalid">Post News</button></td>
+            <td style="text-align: end;" ><button type="submit" [disabled]="newsForm.invalid || disableForm">Post News</button></td>
         </tr>
     </table>
 </form>

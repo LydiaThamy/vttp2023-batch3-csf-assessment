@@ -1,9 +1,12 @@
 package vttp2023.batch3.csf.assessment.cnserver.services;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
+import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -11,12 +14,16 @@ import org.springframework.web.multipart.MultipartFile;
 import vttp2023.batch3.csf.assessment.cnserver.models.News;
 import vttp2023.batch3.csf.assessment.cnserver.models.TagCount;
 import vttp2023.batch3.csf.assessment.cnserver.repositories.ImageRepository;
+import vttp2023.batch3.csf.assessment.cnserver.repositories.NewsRepository;
 
 @Service
 public class NewsService {
 
 	@Autowired
 	private ImageRepository imageRepo;
+
+	@Autowired
+	private NewsRepository newsRepo;
 	
 	// TODO: Task 1
 	// Do not change the method name and the return type
@@ -24,14 +31,16 @@ public class NewsService {
 	// Returns the news id
 	public String postNews(News news, MultipartFile photo) throws IOException {
 
-		news.setPostDate(System.currentTimeMillis());
+		// set date
+		long date = System.currentTimeMillis();
+		news.setPostDate(date);
 
+		// set image URL
 		String imageUrl = imageRepo.postImage(photo);
 		news.setImage(imageUrl);
 
 		// save post in redis
-		String id="";
-
+		String id = newsRepo.postNews(news);
 		return id;
 	}
 	 
@@ -39,15 +48,25 @@ public class NewsService {
 	// Do not change the method name and the return type
 	// You may add any number of parameters
 	// Returns a list of tags and their associated count
-	public List<TagCount> getTags(/* Any number of parameters */) {
-		return new LinkedList<>();
+	public List<TagCount> getTags(Integer time) {
+
+		List<TagCount> tList = new LinkedList<>();
+		List<Document> docs = newsRepo.getTags(time);
+		
+		for (Document d: docs) {
+			tList.add(
+				new TagCount(d.getString("_id"), d.getInteger("count"))
+			);
+		}
+
+		return tList;
 	}
 
 	// TODO: Task 3
 	// Do not change the method name and the return type
 	// You may add any number of parameters
 	// Returns a list of news
-	public List<News> getNewsByTag(/* Any number of parameters */) {
+	public List<News> getNewsByTag(String tag) {
 		return new LinkedList<>();
 	}
 	

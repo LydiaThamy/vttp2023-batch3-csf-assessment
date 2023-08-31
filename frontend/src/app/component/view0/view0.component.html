@@ -1,1 +1,32 @@
-<p>view0 works!</p>
+<form [formGroup]="timeForm">
+    <table>
+        <tr>
+            <td>Time</td>
+            <td>
+                <select formControlName="time" (ngModelChange)="changeTime()">
+                    <option value="5">5 mins</option>
+                    <option value="15">15 mins</option>
+                    <option value="30">30 mins</option>
+                    <option value="45">45 mins</option>
+                    <option value="60">60 mins</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><button type="button" routerLink="/post">Post News</button></td>
+        </tr>
+    </table>
+</form>
+
+<h1>Top Tags</h1>
+
+<div *ngIf="tagCountList.length > 0; else none">
+    <p *ngFor="let tagCount of tagCountList">
+        <a routerLink="/news/{{tagCount.tag}}">{{tagCount.tag | titlecase}} ({{tagCount.count}})</a>
+    </p>
+</div>
+
+<ng-template #none>
+    No hashtags found within the last {{time}} minutes
+</ng-template>
